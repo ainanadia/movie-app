@@ -3,13 +3,20 @@ package com.example.navigationdrawerfragments.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +28,11 @@ import com.example.navigationdrawerfragments.adapter.ItemPhotosAdapter;
 import com.example.navigationdrawerfragments.model.MoviesModel;
 import com.example.navigationdrawerfragments.model.PhotosModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +47,7 @@ public class PhotosFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "test photos";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -47,6 +60,7 @@ public class PhotosFragment extends Fragment {
     RecyclerView recyclerView;
     private StaggeredGridLayoutManager _sGridLayoutManager;
     List<PhotosModel> itemList;
+    ItemPhotosAdapter itemPhotosAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -87,39 +101,69 @@ public class PhotosFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         //recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _sGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        _sGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         recyclerView.setLayoutManager(_sGridLayoutManager);
 
         //initData();
+        itemList  = new ArrayList<>();
+        load_data_from_server(0);
 
-        recyclerView.setAdapter(new ItemPhotosAdapter(initData()));
+        itemPhotosAdapter = new ItemPhotosAdapter(getContext(),itemList );
+        recyclerView.setAdapter(itemPhotosAdapter);
 
         return view;
     }
 
-    private List<PhotosModel> initData() {
+    private void load_data_from_server(int id) {
 
-        itemList = new ArrayList<>();
-        itemList.add(new PhotosModel(R.drawable.thering));
-        itemList.add(new PhotosModel(R.drawable.devilallthetimee));
-        itemList.add(new PhotosModel(R.drawable.ghostship));
-        itemList.add(new PhotosModel(R.drawable.kissingbooth));
-        itemList.add(new PhotosModel(R.drawable.jumanjitwo));
-        itemList.add(new PhotosModel(R.drawable.oldguard));
-        itemList.add(new PhotosModel(R.drawable.frozen));
-        itemList.add(new PhotosModel(R.drawable.birdbox));
-        itemList.add(new PhotosModel(R.drawable.badgenius));
-        itemList.add(new PhotosModel(R.drawable.alice));
-        itemList.add(new PhotosModel(R.drawable.animal));
-        itemList.add(new PhotosModel(R.drawable.aquaman));
-        itemList.add(new PhotosModel(R.drawable.greta));
-        itemList.add(new PhotosModel(R.drawable.roma));
-        itemList.add(new PhotosModel(R.drawable.beauty));
-        itemList.add(new PhotosModel(R.drawable.blackpanther));
-        itemList.add(new PhotosModel(R.drawable.blade));
-        itemList.add(new PhotosModel(R.drawable.bohemian));
+        AsyncTask<Integer,Void,Void> task = new AsyncTask<Integer,Void,Void>(){
 
+            protected Void doInBackground(Integer... integers) {
 
+                JSONObject jsonObject = new JSONObject();
+                final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .header("Content-Type", "application/json; charset=utf-8")
+                        .url("http://192.168.0.190:8080/movie-restful/rest/MovieService/getmovieimage")
+                        .post(body)
+                        .build();
 
-        return itemList;
+                Log.d(TAG, "doInBackground: request");
+                try {
+                    Response response = client.newCall(request).execute();
+                    Log.d(TAG, "doInBackground: response");
+
+                    //Log.d(TAG, "response: " + response.body().string());
+                    String accept = response.body().string();
+                    JSONObject jsnobject = new JSONObject(accept);
+                    JSONArray array = jsnobject.getJSONArray("allMovies");
+
+                    Log.d(TAG, "doInBackground: sampai sini");
+                    for (int i=0; i<array.length(); i++){
+
+                        JSONObject object = array.getJSONObject(i);
+                        Log.d(TAG, "doInBackground: get json");
+                        PhotosModel moviesModel = new PhotosModel( object.getString("movieimage"));
+
+                        itemList.add(moviesModel);
+                        Log.d(TAG, "doInBackground: get json habis");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                itemPhotosAdapter.notifyDataSetChanged();
+            }
+        };
+
+        task.execute(id);
     }
 }

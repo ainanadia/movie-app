@@ -1,4 +1,4 @@
-package com.example.navigationdrawerfragments.activity;
+package com.example.navigationdrawerfragments.activity.movies;
 
 import android.os.Bundle;
 import android.view.View;

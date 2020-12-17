@@ -1,13 +1,23 @@
 package com.example.navigationdrawerfragments.fragment;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,12 +25,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.SearchView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.navigationdrawerfragments.adapter.ItemMoviesAdapter;
 import com.example.navigationdrawerfragments.model.MoviesModel;
 import com.example.navigationdrawerfragments.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +51,7 @@ public class MoviesFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "test db" ;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -46,8 +63,9 @@ public class MoviesFragment extends Fragment {
 
     RecyclerView recyclerView;
     List<MoviesModel> itemList;
-    SearchView searchView;
+    androidx.appcompat.widget.SearchView searchView;
     ItemMoviesAdapter mAdapter;
+    Button btnremove;
 
     /**
      * Use this factory method to create a new instance of
@@ -84,13 +102,72 @@ public class MoviesFragment extends Fragment {
 
         setHasOptionsMenu(true);
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        itemList  = new ArrayList<>();
+        load_data_from_server(0);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),1);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        mAdapter = new ItemMoviesAdapter(getContext(),itemList );
+        recyclerView.setAdapter(mAdapter);
 
         //initData();
-        mAdapter = new ItemMoviesAdapter(initData());
-        recyclerView.setAdapter(mAdapter);
         return view;
+    }
+
+    private void load_data_from_server(int id) {
+
+        AsyncTask<Integer,Void,Void> task = new AsyncTask<Integer,Void,Void>(){
+
+            protected Void doInBackground(Integer... integers) {
+
+                JSONObject jsonObject = new JSONObject();
+                final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .header("Content-Type", "application/json; charset=utf-8")
+                        .url("http://192.168.0.190:8080/movie-restful/rest/MovieService/allmovies")
+                        .post(body)
+                        .build();
+
+                Log.d(TAG, "doInBackground: request");
+                try {
+                    Response response = client.newCall(request).execute();
+                    Log.d(TAG, "doInBackground: response");
+
+                    //Log.d(TAG, "response: " + response.body().string());
+                    String accept = response.body().string();
+                    JSONObject jsnobject = new JSONObject(accept);
+                    JSONArray array = jsnobject.getJSONArray("allMovies");
+
+                    Log.d(TAG, "doInBackground: sampai sini");
+                    for (int i=0; i<array.length(); i++){
+
+                        JSONObject object = array.getJSONObject(i);
+                        Log.d(TAG, "doInBackground: get json");
+                        MoviesModel moviesModel = new MoviesModel(object.getInt("movieid"), object.getString("movietitle"),
+                                object.getInt("movieyear"), object.getString("movieclass"), object.getString("movieimage"), object.getString("moviesynopsis"));
+
+                        itemList.add(moviesModel);
+                        Log.d(TAG, "doInBackground: get json habis");
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+
+        task.execute(id);
     }
 
     @Override
@@ -99,9 +176,9 @@ public class MoviesFragment extends Fragment {
         inflater.inflate(R.menu.search_menu, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+        searchView.findViewById(androidx.appcompat.R.id.search_plate).setBackgroundColor(Color.TRANSPARENT);
         searchView.setIconifiedByDefault(false);
-        searchView.getBackground();
         searchView.setQueryHint("Search..");
         searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
@@ -118,114 +195,5 @@ public class MoviesFragment extends Fragment {
                 return true;
             }
         });
-    }
-
-    private List<MoviesModel> initData(){
-
-        itemList = new ArrayList<>();
-        itemList.add(new MoviesModel(R.drawable.thering, "The Ring", "2020"));
-        itemList.add(new MoviesModel(R.drawable.devilallthetimee, "Devil All The Time", "2020"));
-        itemList.add(new MoviesModel(R.drawable.ghostship, "Ghost Ship", "2019"));
-        itemList.add(new MoviesModel(R.drawable.kissingbooth, "The Kissing Booth 2", "2020"));
-        itemList.add(new MoviesModel(R.drawable.jumanjitwo, "Jumanji ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.oldguard, "Old Guard", "2020"));
-        itemList.add(new MoviesModel(R.drawable.frozen, "Frozen 2", "2019"));
-        itemList.add(new MoviesModel(R.drawable.birdbox, "Bird Box", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.cuckoo, "Cuckoo", "2020"));
-        itemList.add(new MoviesModel(R.drawable.insideout, "Inside Out", "2017"));
-        itemList.add(new MoviesModel(R.drawable.inception, "Inception", "2017"));
-        itemList.add(new MoviesModel(R.drawable.alice, "Alice in the Wonderland", "2018"));
-        itemList.add(new MoviesModel(R.drawable.rango, "Rango ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.roma, "Roma", "2020"));
-        itemList.add(new MoviesModel(R.drawable.blackpanther, "Black Panther", "2019"));
-        itemList.add(new MoviesModel(R.drawable.bohemian, "Bohemian Rhapsody", "2019"));
-        itemList.add(new MoviesModel(R.drawable.hellboy, "Hell Boy", "2018"));
-        itemList.add(new MoviesModel(R.drawable.green, "Green Book", "2019"));
-        itemList.add(new MoviesModel(R.drawable.you, "You", "2019"));
-        itemList.add(new MoviesModel(R.drawable.pirates, "Pirates of the Carribean", "2018"));
-        itemList.add(new MoviesModel(R.drawable.up, "Up", "2018"));
-        itemList.add(new MoviesModel(R.drawable.thor, "Thor", "2019"));
-        itemList.add(new MoviesModel(R.drawable.peaky, "Peaky Blinders", "2020"));
-        itemList.add(new MoviesModel(R.drawable.strangertthing, "Stranger Things ", "2016"));
-        itemList.add(new MoviesModel(R.drawable.kungfu, "Kungfu Panda", "2018"));
-        itemList.add(new MoviesModel(R.drawable.star, "A Star is Born", "2019"));
-        itemList.add(new MoviesModel(R.drawable.ironman, "Iron Man 2", "2015"));
-        itemList.add(new MoviesModel(R.drawable.dunkirk, "Dunkirk", "2018"));
-        itemList.add(new MoviesModel(R.drawable.gold, "Gold", "2019"));
-        itemList.add(new MoviesModel(R.drawable.blade, "Blade", "2015"));
-        itemList.add(new MoviesModel(R.drawable.beauty, "Beauty and The Beast", "2017"));
-        itemList.add(new MoviesModel(R.drawable.sitter, "The Sitter", "2020"));
-        itemList.add(new MoviesModel(R.drawable.aquaman, "Aquaman ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.bfg, "The BFG", "2020"));
-        itemList.add(new MoviesModel(R.drawable.consumption, "Consumption", "2019"));
-        itemList.add(new MoviesModel(R.drawable.deadpool, "Deadpool", "2019"));
-        itemList.add(new MoviesModel(R.drawable.fantastice, "Fantastic Beast", "2019"));
-        itemList.add(new MoviesModel(R.drawable.flash, "Flash", "2018"));
-        itemList.add(new MoviesModel(R.drawable.giant, "I Kill Giants", "2019"));
-        itemList.add(new MoviesModel(R.drawable.gid, "God of Egypts", "2020"));
-        itemList.add(new MoviesModel(R.drawable.greta, "Greta", "2020"));
-        itemList.add(new MoviesModel(R.drawable.hellboy, "Hellboy", "2019"));
-        itemList.add(new MoviesModel(R.drawable.inception, "Inception", "2016"));
-        itemList.add(new MoviesModel(R.drawable.lala, "Lala Land ", "2017"));
-        itemList.add(new MoviesModel(R.drawable.lion, "Lion", "2016"));
-        itemList.add(new MoviesModel(R.drawable.lucky, "Lucky", "2018"));
-        itemList.add(new MoviesModel(R.drawable.mazer, "Maze Runner - Death Cure", "2019"));
-        itemList.add(new MoviesModel(R.drawable.meg, "The Meg", "2018"));
-        itemList.add(new MoviesModel(R.drawable.moana, "Moana", "2019"));
-        itemList.add(new MoviesModel(R.drawable.neighbor, "Neighbour", "2020"));
-        itemList.add(new MoviesModel(R.drawable.passengers, "Passengers", "2017"));
-        itemList.add(new MoviesModel(R.drawable.pink, "Pink", "2020"));
-        itemList.add(new MoviesModel(R.drawable.rogue, "Rogue One ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.secret, "The Secret She Hide", "2020"));
-        itemList.add(new MoviesModel(R.drawable.sing, "Sing", "2018"));
-        itemList.add(new MoviesModel(R.drawable.sultan, "Sultan", "2017"));
-        itemList.add(new MoviesModel(R.drawable.tarzan, "Tarzan", "2018"));
-        itemList.add(new MoviesModel(R.drawable.thegirl, "The Girl on The Train", "2019"));
-        itemList.add(new MoviesModel(R.drawable.thetickets, "The Ticket", "2019"));
-        itemList.add(new MoviesModel(R.drawable.thewild, "The Wild Life", "2020"));
-        itemList.add(new MoviesModel(R.drawable.thor, "Thor", "2020"));
-        itemList.add(new MoviesModel(R.drawable.tombraider, "Tomb Raider", "2019"));
-        itemList.add(new MoviesModel(R.drawable.train, "The Girl on The Train", "2020"));
-        itemList.add(new MoviesModel(R.drawable.venom, "Venom ", "2017"));
-        itemList.add(new MoviesModel(R.drawable.wrinke, "Wrinkle", "2020"));
-        itemList.add(new MoviesModel(R.drawable.xmen, "X-Men", "2019"));
-        itemList.add(new MoviesModel(R.drawable.birdbox, "Bird Box", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.thering, "The Ring", "2020"));
-        itemList.add(new MoviesModel(R.drawable.devilallthetimee, "Devil All The Time", "2020"));
-        itemList.add(new MoviesModel(R.drawable.ghostship, "Ghost Ship", "2019"));
-        itemList.add(new MoviesModel(R.drawable.kissingbooth, "The Kissing Booth 2", "2020"));
-        itemList.add(new MoviesModel(R.drawable.jumanjitwo, "Jumanji ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.oldguard, "Old Guard", "2020"));
-        itemList.add(new MoviesModel(R.drawable.frozen, "Frozen 2", "2019"));
-        itemList.add(new MoviesModel(R.drawable.birdbox, "Bird Box", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.thering, "The Ring", "2020"));
-        itemList.add(new MoviesModel(R.drawable.devilallthetimee, "Devil All The Time", "2020"));
-        itemList.add(new MoviesModel(R.drawable.ghostship, "Ghost Ship", "2019"));
-        itemList.add(new MoviesModel(R.drawable.kissingbooth, "The Kissing Booth 2", "2020"));
-        itemList.add(new MoviesModel(R.drawable.jumanjitwo, "Jumanji ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.oldguard, "Old Guard", "2020"));
-        itemList.add(new MoviesModel(R.drawable.frozen, "Frozen 2", "2019"));
-        itemList.add(new MoviesModel(R.drawable.birdbox, "Bird Box", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.thering, "The Ring", "2020"));
-        itemList.add(new MoviesModel(R.drawable.devilallthetimee, "Devil All The Time", "2020"));
-        itemList.add(new MoviesModel(R.drawable.ghostship, "Ghost Ship", "2019"));
-        itemList.add(new MoviesModel(R.drawable.kissingbooth, "The Kissing Booth 2", "2020"));
-        itemList.add(new MoviesModel(R.drawable.jumanjitwo, "Jumanji ", "2019"));
-        itemList.add(new MoviesModel(R.drawable.oldguard, "Old Guard", "2020"));
-        itemList.add(new MoviesModel(R.drawable.frozen, "Frozen 2", "2019"));
-        itemList.add(new MoviesModel(R.drawable.birdbox, "Bird Box", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-        itemList.add(new MoviesModel(R.drawable.badgenius, "Bad Genius", "2019"));
-
-
-
-        return itemList;
     }
 }

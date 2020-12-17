@@ -2,37 +2,68 @@ package com.example.navigationdrawerfragments.model;
 
 public class MoviesModel {
 
-    int image;
-    String movieName;
-    String movieYear;
+    int movieId;
+    String movieTitle;
+    int movieYear;
+    String movieClass;
+    String movieImage;
+    String movieSynopsis;
 
-    public MoviesModel(int image, String movieName, String movieYear) {
-        this.image = image;
-        this.movieName = movieName;
+
+    public MoviesModel(int movieId, String movieTitle, int movieYear, String movieClass, String movieImage, String movieSynopsis) {
+        this.movieId = movieId;
+        this.movieTitle = movieTitle;
         this.movieYear = movieYear;
+        this.movieClass = movieClass;
+        this.movieImage = movieImage;
+        this.movieSynopsis = movieSynopsis;
     }
 
-    public int getImage() {
-        return image;
+    public int getMovieId() {
+        return movieId;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
-    public String getMovieName() {
-        return movieName;
+    public String getMovieTitle() {
+        return movieTitle;
     }
 
-    public void setMovieName(String movieName) {
-        this.movieName = movieName;
+    public void setMovieTitle(String movieTitle) {
+        this.movieTitle = movieTitle;
     }
 
-    public String getMovieYear() {
+    public int getMovieYear() {
         return movieYear;
     }
 
-    public void setMovieYear(String movieYear) {
+    public void setMovieYear(int movieYear) {
         this.movieYear = movieYear;
+    }
+
+    public String getMovieClass() {
+        return movieClass;
+    }
+
+    public void setMovieClass(String movieClass) {
+        this.movieClass = movieClass;
+    }
+
+    public String getMovieImage() {
+        return movieImage;
+    }
+
+    public void setMovieImage(String movieImage) {
+        this.movieImage = movieImage;
+    }
+
+    public String getMovieSynopsis() {
+        return movieSynopsis;
+    }
+
+    public void setMovieSynopsis(String movieSynopsis) {
+        this.movieSynopsis = movieSynopsis;
     }
 }

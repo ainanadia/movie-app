@@ -2,17 +2,17 @@ package com.example.navigationdrawerfragments.model;
 
 public class PhotosModel {
 
-    int photos;
+    String photos;
 
-    public PhotosModel(int photos) {
+    public PhotosModel(String photos) {
         this.photos = photos;
     }
 
-    public int getPhotos() {
+    public String getPhotos() {
         return photos;
     }
 
-    public void setPhotos(int photos) {
+    public void setPhotos(String photos) {
         this.photos = photos;
     }
 }

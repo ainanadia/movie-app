@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -11,7 +15,7 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -22,12 +26,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.TheRingActivity"/>
-        <activity android:name=".activity.DevilAllTheTimeActivity"/>
-        <activity android:name=".activity.GhostShipActivity"/>
-        <activity android:name=".activity.PeakyActivity"/>
-        <activity android:name=".activity.StrangerThingsActivity"/>
-        <activity android:name=".activity.PlayTrailerActivity"  />
+        <activity android:name=".activity.movies.TheRingActivity"/>
+        <activity android:name=".activity.movies.DevilAllTheTimeActivity"/>
+        <activity android:name=".activity.movies.GhostShipActivity"/>
+        <activity android:name=".activity.movies.PeakyActivity"/>
+        <activity android:name=".activity.movies.StrangerThingsActivity"/>
+        <activity android:name=".activity.playtrailer.PlayTrailerActivity" android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name=".activity.trendingmovies.TrendingMoviesActivity"/>
+        <activity android:name=".activity.addmovie.AddMovieActivity"/>
+        <activity android:name=".activity.movies.AliveActivity"/>
+        <activity android:name=".activity.movies.ITActivity"/>
+        <activity android:name=".activity.updatemovie.UpdateMovieActivity"/>
+
+
+
+
+
+
 
     </application>
 

@@ -6,10 +6,15 @@ android {
 
     defaultConfig {
         applicationId "com.example.navigationdrawerfragments"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+
+        dataBinding {
+            enabled = true
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,14 +40,27 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.1.0-alpha07'
 
+    implementation 'com.android.support:multidex:1.0.2'
+
     // Glide image library
     implementation 'com.github.bumptech.glide:glide:3.7.0'
-    
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    //OkHttp
+    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+
+    // Asynctask Http
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+
     // Assymetric Grid Layout
     implementation 'com.felipecsl.asymmetricgridview:library:2.0.1'
 
     // Text Justification
     implementation 'com.codesgood:justifiedtextview:1.1.0'
+
+    //Swipe Refresh Layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
 
 }

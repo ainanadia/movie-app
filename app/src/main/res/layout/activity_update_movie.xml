@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnbackUpdateMovie"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="80dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_backbtn"
+            android:backgroundTint="@color/design_default_color_on_secondary" />
+
+        <TextView
+            android:id="@+id/textUpdateMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="100dp"
+            android:layout_weight="1"
+            android:text="Update Movie"
+            android:textColor="#000000"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textMovieTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Movie Title: "
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextMovieTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:backgroundTint="#000000"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textMovieYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Movie Year:"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextMovieYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:backgroundTint="#000000"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#000000"
+        />
+
+    <TextView
+        android:id="@+id/textMovieClass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Movie Class: "
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"/>
+
+
+    <EditText
+        android:id="@+id/editTextMovieClass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:backgroundTint="#000000"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textMovieImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Movie Image: "
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp">
+
+        <Button
+            android:id="@+id/buttonUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Image" />
+
+        <ImageView
+            android:id="@+id/imageViewUpload"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/search_border"
+            android:scaleType="fitXY" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textMovieSynopsis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Movie Synopsis: "
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="20dp"/>
+
+    <EditText
+        android:id="@+id/editTextMovieSynopsis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:backgroundTint="#000000"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#000000"/>
+
+    <Button
+        android:id="@+id/buttonUpdateMovie"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="update"
+        android:textColor="#ffffff"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:background="@drawable/cardview_border"/>
+</LinearLayout>

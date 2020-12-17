@@ -2,19 +2,19 @@ package com.example.navigationdrawerfragments.model;
 
 public class TrendingSeriesModel {
 
-    int image;
+    String image;
 
 
-    public TrendingSeriesModel(int image) {
+    public TrendingSeriesModel(String image) {
         this.image = image;
 
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

@@ -1,19 +1,13 @@
 package com.example.navigationdrawerfragments.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.navigationdrawerfragments.R;
-import com.example.navigationdrawerfragments.activity.DevilAllTheTimeActivity;
-import com.example.navigationdrawerfragments.activity.GhostShipActivity;
-import com.example.navigationdrawerfragments.activity.PeakyActivity;
-import com.example.navigationdrawerfragments.activity.StrangerThingsActivity;
-import com.example.navigationdrawerfragments.activity.TheRingActivity;
-import com.example.navigationdrawerfragments.model.MoviesModel;
 import com.example.navigationdrawerfragments.model.TrendingSeriesModel;
 
 import java.util.List;
@@ -23,14 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemTrendingSeriesAdapter extends RecyclerView.Adapter<ItemTrendingSeriesAdapter.ViewHolder> {
 
+    private Context context;
     List<TrendingSeriesModel> itemList;
 
-
-    public ItemTrendingSeriesAdapter(List<TrendingSeriesModel> itemList){
-
+    public ItemTrendingSeriesAdapter(Context context, List<TrendingSeriesModel> itemList) {
+        this.context = context;
         this.itemList = itemList;
     }
-
 
     @NonNull
     @Override
@@ -45,20 +38,20 @@ public class ItemTrendingSeriesAdapter extends RecyclerView.Adapter<ItemTrending
     @Override
     public void onBindViewHolder(@NonNull ItemTrendingSeriesAdapter.ViewHolder holder, final int position) {
 
-        holder.itemImage.setImageResource(itemList.get(position).getImage());
+        Glide.with(context).load(itemList.get(position).getImage()).into(holder.itemImage);
 
-        holder.itemImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (position == 0) {
-                    Intent intent = new Intent(view.getContext(), PeakyActivity.class);
-                    view.getContext().startActivity(intent);
-                } else if (position == 1) {
-                    Intent intent = new Intent(view.getContext(), StrangerThingsActivity.class);
-                    view.getContext().startActivity(intent);
-                }
-            }
-        });
+//        holder.itemImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (position == 0) {
+//                    Intent intent = new Intent(view.getContext(), PeakyActivity.class);
+//                    view.getContext().startActivity(intent);
+//                } else if (position == 1) {
+//                    Intent intent = new Intent(view.getContext(), StrangerThingsActivity.class);
+//                    view.getContext().startActivity(intent);
+//                }
+//            }
+//        });
 
     }
 

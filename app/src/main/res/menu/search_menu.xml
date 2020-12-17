@@ -9,5 +9,5 @@
         android:iconifiedByDefault="false"
         android:queryBackground="@android:color/transparent"
         app:showAsAction="collapseActionView|always"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 </menu>

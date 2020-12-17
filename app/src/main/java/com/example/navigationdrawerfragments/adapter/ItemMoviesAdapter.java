@@ -1,5 +1,7 @@
 package com.example.navigationdrawerfragments.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.navigationdrawerfragments.R;
+import com.example.navigationdrawerfragments.activity.movies.DevilAllTheTimeActivity;
+import com.example.navigationdrawerfragments.activity.movies.GhostShipActivity;
+import com.example.navigationdrawerfragments.activity.movies.TheRingActivity;
 import com.example.navigationdrawerfragments.model.MoviesModel;
 
 import java.util.ArrayList;
@@ -18,16 +24,18 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ItemMoviesAdapter extends RecyclerView.Adapter<ItemMoviesAdapter.ViewHolder> implements Filterable{
+public class ItemMoviesAdapter extends RecyclerView.Adapter<ItemMoviesAdapter.ViewHolder> implements Filterable {
 
+    private Context context;
     List<MoviesModel> itemList;
     List<MoviesModel> itemListFull;
 
 
-    public ItemMoviesAdapter(List<MoviesModel> itemList){
-
+    public ItemMoviesAdapter(Context context, List<MoviesModel> itemList){
+        this.context = context;
         this.itemList = itemList;
         itemListFull = new ArrayList<>(itemList);
+
     }
 
 
@@ -42,11 +50,29 @@ public class ItemMoviesAdapter extends RecyclerView.Adapter<ItemMoviesAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemMoviesAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemMoviesAdapter.ViewHolder holder, final int position) {
 
-        holder.itemImage.setImageResource(itemList.get(position).getImage());
-        holder.itemText.setText(itemList.get(position).getMovieName());
-        holder.itemLecturerText.setText(itemList.get(position).getMovieYear());
+        Glide.with(context).load(itemList.get(position).getMovieImage()).into(holder.movieImage);
+        holder.movieTitle.setText(itemList.get(position).getMovieTitle());
+        holder.movieYear.setText(String.valueOf(itemList.get(position).getMovieYear()));
+        holder.movieClass.setText(itemList.get(position).getMovieClass());
+        holder.movieSynopsis.setText(itemList.get(position).getMovieSynopsis());
+
+        holder.movieImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (position == 0) {
+                    Intent intent = new Intent(view.getContext(), TheRingActivity.class);
+                    view.getContext().startActivity(intent);
+                } else if (position == 1) {
+                    Intent intent = new Intent(view.getContext(), DevilAllTheTimeActivity.class);
+                    view.getContext().startActivity(intent);
+                }else if (position == 2) {
+                    Intent intent = new Intent(view.getContext(), GhostShipActivity.class);
+                    view.getContext().startActivity(intent);
+                }
+            }
+        });
 
     }
 
@@ -71,7 +97,7 @@ public class ItemMoviesAdapter extends RecyclerView.Adapter<ItemMoviesAdapter.Vi
                 String filterPattern = charSequence.toString().toLowerCase().trim();
 
                 for (MoviesModel item : itemListFull) {
-                    if (item.getMovieName().toLowerCase().contains(filterPattern)) {
+                    if (item.getMovieTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
@@ -94,17 +120,20 @@ public class ItemMoviesAdapter extends RecyclerView.Adapter<ItemMoviesAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView itemImage;
-        TextView itemText;
-        TextView itemLecturerText;
+        ImageView movieImage;
+        TextView movieTitle;
+        TextView movieYear;
+        TextView movieClass;
+        TextView movieSynopsis;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            itemImage = itemView.findViewById(R.id.itemImage);
-            itemText = itemView.findViewById(R.id.movieName);
-            itemLecturerText = itemView.findViewById(R.id.movieYear);
-
+            movieImage = itemView.findViewById(R.id.itemImage);
+            movieTitle = itemView.findViewById(R.id.movieName);
+            movieYear = itemView.findViewById(R.id.movieYear);
+            movieClass = itemView.findViewById(R.id.movieClass);
+            movieSynopsis = itemView.findViewById(R.id.movieSynopsis);
         }
     }
 }
